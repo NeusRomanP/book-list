@@ -5,6 +5,20 @@
   const books = ref(booksData.library);
   const books_count = ref(books.value.length);
   const reading_books = ref([]);
+  const genres = Array.from(new Set(booksData.library.map((book) => {
+    return book.book.genre;
+  })));
+
+  const filterByGenre = () => {
+    const genre = document.getElementById('genre').value;
+    if (genre === 'Todos') {
+      books.value = booksData.library;
+    }else{
+      books.value = booksData.library.filter((book) => {
+        return book.book.genre === genre;
+      })
+    }
+  }
 
   const addToReadingBooks = (id) => {
     let book_to_add = books.value.filter((book) => {
@@ -31,9 +45,30 @@
     books_count.value = books.value.length - reading_books.value.length;
   }, {deep:true});
 
+  watch(books, (newVal) =>{
+    console.log('newval', newVal);
+    books_count.value = books.value.length - reading_books.value.length;
+  }, {deep:true});
+
 </script>
 
 <template>
+  <div>
+    <select 
+      name="genre" 
+      id="genre" 
+      @change="filterByGenre"
+    >
+      <option value="Todos">Todos</option>
+      <option 
+        v-for="(genre, index) in genres" 
+        :key="'g-'+(index + 1)" 
+        :value="genre"
+      >
+        {{ genre }}
+      </option>
+    </select>
+  </div>
   <main>
     <h2> {{ books_count }} libros disponibles</h2>
     <div class="available-books">
