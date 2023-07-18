@@ -6,19 +6,24 @@
   const books_count = books.length;
   const reading_books = ref([]);
 
-  const addToReadingBooks = (id) =>{
+  const addToReadingBooks = (id) => {
     let book_to_add = books.filter((book) => {
       return book.book.ISBN === id;
     });
 
     reading_books.value.push(book_to_add);
+  }
 
-    console.log(reading_books);
+  const removeFromReadingBooks = (id) => {
+    console.log(reading_books.value[0])
+    reading_books.value = reading_books.value.filter((book) => {
+      return book[0].book.ISBN !== id;
+    })
   }
 
   watch(reading_books, (newVal) =>{
     console.log('newval', newVal);
-  }, {deep:true})
+  }, {deep:true});
 
 </script>
 
@@ -37,12 +42,22 @@
   <aside>
     <div>
       <h2>Lista de lectura</h2>
-      <div v-if="reading_books.length > 0">
-        <BookCard 
+      <div 
+        class="reading-books"
+        v-if="reading_books.length > 0"
+      >
+        <div
+          class="book"
           v-for="book in reading_books" 
           :key="book[0].book.ISBN" 
-          :book="book[0].book"
-        />
+        >
+          <BookCard 
+            :book="book[0].book"
+          />
+          <button @click="removeFromReadingBooks(book[0].book.ISBN)">
+            ❌
+          </button>
+        </div>
       </div>
     </div>
   </aside>
@@ -54,5 +69,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.reading-books{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.book{
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
 }
 </style>
