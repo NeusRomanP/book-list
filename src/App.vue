@@ -2,12 +2,12 @@
   import { ref, watch } from 'vue';
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
-  const books = booksData.library;
-  const books_count = books.length;
+  const books = ref(booksData.library);
+  const books_count = ref(books.value.length);
   const reading_books = ref([]);
 
   const addToReadingBooks = (id) => {
-    let book_to_add = books.filter((book) => {
+    let book_to_add = books.value.filter((book) => {
       return book.book.ISBN === id;
     });
 
@@ -28,6 +28,7 @@
 
   watch(reading_books, (newVal) =>{
     console.log('newval', newVal);
+    books_count.value = books.value.length - reading_books.value.length;
   }, {deep:true});
 
 </script>
