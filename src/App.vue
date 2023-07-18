@@ -15,9 +15,14 @@
   }
 
   const removeFromReadingBooks = (id) => {
-    console.log(reading_books.value[0])
     reading_books.value = reading_books.value.filter((book) => {
       return book[0].book.ISBN !== id;
+    })
+  }
+
+  const isAdded = (id) => {
+    return reading_books.value.some((book) => {
+      return book[0].book.ISBN === id;
     })
   }
 
@@ -39,8 +44,18 @@
         <BookCard 
           :book="book.book"
         />
-        <button @click="addToReadingBooks(book.book.ISBN)">
+        <button 
+          class="add"
+          v-if="!isAdded(book.book.ISBN)"
+          @click="addToReadingBooks(book.book.ISBN)"
+        >
           Añadir
+        </button>
+        <button 
+          class="added"
+          v-else
+        >
+          Añadido
         </button>
       </div>
     </div>
@@ -88,4 +103,24 @@
   display: flex;
   flex-direction: column;
 }
+
+.book .added{
+  color: #999;
+  cursor: auto;
+}
+
+button{
+  border: none;
+}
+
+button:hover{
+  border: none;
+}
+
+button:focus{
+  outline: none;
+}
+
+
+
 </style>
