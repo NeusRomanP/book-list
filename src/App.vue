@@ -1,9 +1,25 @@
 <script setup>
+  import { ref, watch } from 'vue';
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
-  let books = booksData.library;
-  let books_count = books.length;
-  let reading_books = [];
+  const books = booksData.library;
+  const books_count = books.length;
+  const reading_books = ref([]);
+
+  const addToReadingBooks = (id) =>{
+    let book_to_add = books.filter((book) => {
+      return book.book.ISBN === id;
+    });
+
+    reading_books.value.push(book_to_add);
+
+    console.log(reading_books);
+  }
+
+  watch(reading_books, (newVal) =>{
+    console.log('newval', newVal);
+  }, {deep:true})
+
 </script>
 
 <template>
@@ -11,6 +27,7 @@
     <h2> {{ books_count }} libros disponibles</h2>
     <div class="available-books">
       <BookCard 
+        @click="addToReadingBooks(book.book.ISBN)"
         v-for="book in books" 
         :key="book.book.ISBN" 
         :book="book.book"
@@ -20,11 +37,12 @@
   <aside>
     <div>
       <h2>Lista de lectura</h2>
-      <div
-        v-for="book in reading_books"
-        :key="'rb-'+book.book.ISBN"
-      >
-        {{ book.book.title }}
+      <div v-if="reading_books.length > 0">
+        <BookCard 
+          v-for="book in reading_books" 
+          :key="book[0].book.ISBN" 
+          :book="book[0].book"
+        />
       </div>
     </div>
   </aside>
@@ -36,17 +54,5 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-}
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
 }
 </style>
