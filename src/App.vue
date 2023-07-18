@@ -42,12 +42,29 @@
 
   watch(reading_books, (newVal) =>{
     console.log('newval', newVal);
-    books_count.value = books.value.length - reading_books.value.length;
+    const genre = document.getElementById('genre').value;
+    if(genre === 'Todos'){
+      books_count.value = books.value.length - reading_books.value.length;
+    }else{
+      let genre_reading_books = reading_books.value.filter((book) => {
+        return book[0].book.genre === genre;
+      })
+      books_count.value = books.value.length - genre_reading_books.length;
+    }
   }, {deep:true});
 
   watch(books, (newVal) =>{
     console.log('newval', newVal);
-    books_count.value = books.value.length - reading_books.value.length;
+    const genre = document.getElementById('genre').value;
+    if(genre === 'Todos'){
+      books_count.value = books.value.length - reading_books.value.length;
+    }else{
+      let genre_reading_books = reading_books.value.filter((book) => {
+        return book[0].book.genre === genre;
+      })
+      books_count.value = books.value.length - genre_reading_books.length;
+    }
+    
   }, {deep:true});
 
 </script>
