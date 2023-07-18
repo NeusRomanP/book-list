@@ -31,12 +31,18 @@
   <main>
     <h2> {{ books_count }} libros disponibles</h2>
     <div class="available-books">
-      <BookCard 
-        @click="addToReadingBooks(book.book.ISBN)"
+      <div
+        class="book"
         v-for="book in books" 
         :key="book.book.ISBN" 
-        :book="book.book"
-      />
+      >
+        <BookCard 
+          :book="book.book"
+        />
+        <button @click="addToReadingBooks(book.book.ISBN)">
+          Añadir
+        </button>
+      </div>
     </div>
   </main>
   <aside>
