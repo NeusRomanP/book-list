@@ -10,7 +10,7 @@
   })));
 
   onBeforeMount(() => {
-    reading_books.value = JSON.parse(localStorage.getItem('reading-books'));
+    reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
   });
 
   const filterByGenre = () => {
@@ -71,6 +71,10 @@
     }
     
   }, {deep:true});
+
+  window.addEventListener('storage', () =>{
+    reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
+  });
 
 </script>
 
