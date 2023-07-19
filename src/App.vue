@@ -88,6 +88,7 @@
   </div>
   <main>
     <h2> {{ books_count }} libros disponibles</h2>
+    <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
     <div class="available-books">
       <div
         class="book"
