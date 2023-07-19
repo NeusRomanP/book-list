@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, watch } from 'vue';
+  import { onBeforeMount, ref, watch } from 'vue';
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
   const books = ref(booksData.library);
@@ -8,6 +8,10 @@
   const genres = Array.from(new Set(booksData.library.map((book) => {
     return book.book.genre;
   })));
+
+  onBeforeMount(() => {
+    reading_books.value = JSON.parse(localStorage.getItem('reading-books'));
+  });
 
   const filterByGenre = () => {
     const genre = document.getElementById('genre').value;
@@ -42,6 +46,7 @@
 
   watch(reading_books, (newVal) =>{
     console.log('newval', newVal);
+    localStorage.setItem('reading-books', JSON.stringify(newVal));
     const genre = document.getElementById('genre').value;
     if(genre === 'Todos'){
       books_count.value = books.value.length - reading_books.value.length;
