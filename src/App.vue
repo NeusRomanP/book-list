@@ -45,7 +45,6 @@
   }
 
   watch(reading_books, (newVal) =>{
-    console.log('newval', newVal);
     localStorage.setItem('reading-books', JSON.stringify(newVal));
     const genre = document.getElementById('genre').value;
     if(genre === 'Todos'){
@@ -58,8 +57,7 @@
     }
   }, {deep:true});
 
-  watch(books, (newVal) =>{
-    console.log('newval', newVal);
+  watch(books, () =>{
     const genre = document.getElementById('genre').value;
     if(genre === 'Todos'){
       books_count.value = books.value.length - reading_books.value.length;
