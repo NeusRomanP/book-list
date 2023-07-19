@@ -13,14 +13,33 @@
     reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
   });
 
-  const filterByGenre = () => {
+  const filterByName = (e) => {
+    const name = document.getElementById('name').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    if(e){
+      filterByGenre();
+    }
+
+    books.value = books.value.filter((book)=> {
+      return book.book.title.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .includes(name);
+    })
+  }
+
+  const filterByGenre = (e) => {
     const genre = document.getElementById('genre').value;
+
     if (genre === 'Todos') {
       books.value = booksData.library;
     }else{
       books.value = booksData.library.filter((book) => {
         return book.book.genre === genre;
       })
+    }
+
+    if(e){
+      filterByName();
     }
   }
 
@@ -77,13 +96,15 @@
 </script>
 
 <template>
-  <div>
+  <form @submit.prevent="(e) => {e.preventDefault();}">
     <select 
       name="genre" 
       id="genre" 
       @change="filterByGenre"
     >
-      <option value="Todos">Todos</option>
+      <option value="Todos">
+        Todos
+      </option>
       <option 
         v-for="(genre, index) in genres" 
         :key="'g-'+(index + 1)" 
@@ -92,7 +113,13 @@
         {{ genre }}
       </option>
     </select>
-  </div>
+    <input
+      type="text"
+      id="name"
+      placeholder="Buscar por nombre"
+      @input="filterByName"
+    >
+  </form>
   <main>
     <h2> {{ books_count }} libros disponibles</h2>
     <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
