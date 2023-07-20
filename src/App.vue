@@ -9,8 +9,11 @@
     return book.book.genre;
   })));
 
+  const current_genre = ref('Todos');
+
   onBeforeMount(() => {
     reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
+    books_count.value = books.value.length - reading_books.value.length;
   });
 
   const filterByName = (e) => {
@@ -25,16 +28,27 @@
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .includes(name);
     })
+
+    let reading_books_filtered = reading_books.value.filter((book) => {
+      return book[0].book.genre === current_genre.value &&
+        book[0].book.title.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .includes(name);
+    })
+
+
+    books_count.value = books.value.length - reading_books_filtered.length;
+
   }
 
   const filterByGenre = (e) => {
-    const genre = document.getElementById('genre').value;
+    current_genre.value = document.getElementById('genre').value;
 
-    if (genre === 'Todos') {
+    if (current_genre.value === 'Todos') {
       books.value = booksData.library;
     }else{
       books.value = booksData.library.filter((book) => {
-        return book.book.genre === genre;
+        return book.book.genre === current_genre.value;
       })
     }
 
@@ -49,12 +63,20 @@
     });
 
     reading_books.value.push(book_to_add);
+
+    books_count.value = books.value.length - reading_books.value.length;
+
+    filterByName();
   }
 
   const removeFromReadingBooks = (id) => {
     reading_books.value = reading_books.value.filter((book) => {
       return book[0].book.ISBN !== id;
-    })
+    });
+
+    books_count.value = books.value.length - reading_books.value.length;
+
+    filterByName()
   }
 
   const isAdded = (id) => {
@@ -65,29 +87,25 @@
 
   watch(reading_books, (newVal) =>{
     localStorage.setItem('reading-books', JSON.stringify(newVal));
-    const genre = document.getElementById('genre').value;
-    if(genre === 'Todos'){
-      books_count.value = books.value.length - reading_books.value.length;
-    }else{
-      let genre_reading_books = reading_books.value.filter((book) => {
-        return book[0].book.genre === genre;
-      })
-      books_count.value = books.value.length - genre_reading_books.length;
-    }
   }, {deep:true});
 
   watch(books, () =>{
-    const genre = document.getElementById('genre').value;
-    if(genre === 'Todos'){
+    
+  }, {deep:true});
+
+  watch(current_genre, (newGenre) =>{
+    if(newGenre === 'Todos'){
       books_count.value = books.value.length - reading_books.value.length;
     }else{
       let genre_reading_books = reading_books.value.filter((book) => {
-        return book[0].book.genre === genre;
+        return book[0].book.genre === newGenre;
       })
       books_count.value = books.value.length - genre_reading_books.length;
     }
     
   }, {deep:true});
+
+  
 
   window.addEventListener('storage', () =>{
     reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
