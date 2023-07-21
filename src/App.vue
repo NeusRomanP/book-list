@@ -29,16 +29,23 @@
       .includes(name);
     })
 
-    let reading_books_filtered = reading_books.value.filter((book) => {
-      return book[0].book.genre === current_genre.value &&
-        book[0].book.title.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .includes(name);
+  }
+
+  const getNewCounter = () => {
+
+    let filtered_books_ISBN = books.value.map((book) => {
+      return book.book.ISBN;
     })
 
-
-    books_count.value = books.value.length - reading_books_filtered.length;
-
+    let reading_books_filtered = reading_books.value.filter((book) => {
+      if (!filtered_books_ISBN.includes(book[0].book.ISBN)) return false;
+      return ((book[0].book.genre === current_genre.value || current_genre.value === 'Todos') &&
+        book[0].book.title.toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .includes(name));
+    })
+    
+    return books.value.length - reading_books_filtered.length;
   }
 
   const filterByGenre = (e) => {
@@ -66,7 +73,7 @@
 
     books_count.value = books.value.length - reading_books.value.length;
 
-    filterByName();
+    books_count.value = getNewCounter();
   }
 
   const removeFromReadingBooks = (id) => {
@@ -75,8 +82,6 @@
     });
 
     books_count.value = books.value.length - reading_books.value.length;
-
-    filterByName()
   }
 
   const isAdded = (id) => {
@@ -87,21 +92,16 @@
 
   watch(reading_books, (newVal) =>{
     localStorage.setItem('reading-books', JSON.stringify(newVal));
+
+    books_count.value = getNewCounter();
   }, {deep:true});
 
   watch(books, () =>{
-    
+    books_count.value = getNewCounter();
   }, {deep:true});
 
-  watch(current_genre, (newGenre) =>{
-    if(newGenre === 'Todos'){
-      books_count.value = books.value.length - reading_books.value.length;
-    }else{
-      let genre_reading_books = reading_books.value.filter((book) => {
-        return book[0].book.genre === newGenre;
-      })
-      books_count.value = books.value.length - genre_reading_books.length;
-    }
+  watch(current_genre, () =>{
+    books_count.value = getNewCounter();
     
   }, {deep:true});
 
