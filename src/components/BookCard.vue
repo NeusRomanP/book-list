@@ -17,7 +17,7 @@ defineProps({
 <style scoped>
 .cover{
   object-fit: cover;
-  width: 200px;
+  width: 100%;
   aspect-ratio: 2/3;
 }
 

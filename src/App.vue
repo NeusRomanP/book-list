@@ -114,101 +114,85 @@
 </script>
 
 <template>
-  <form @submit.prevent="(e) => {e.preventDefault();}">
-    <select 
-      name="genre" 
-      id="genre" 
-      @change="filterByGenre"
-    >
-      <option value="Todos">
-        Todos
-      </option>
-      <option 
-        v-for="(genre, index) in genres" 
-        :key="'g-'+(index + 1)" 
-        :value="genre"
-      >
-        {{ genre }}
-      </option>
-    </select>
-    <input
-      type="text"
-      id="name"
-      placeholder="Buscar por nombre"
-      @input="filterByName"
-    >
-  </form>
-  <main>
-    <h2> {{ books_count }} libros disponibles</h2>
-    <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
-    <div class="available-books">
-      <div
-        class="book"
-        v-for="book in books" 
-        :key="book.book.ISBN" 
-      >
-        <BookCard 
-          :book="book.book"
-        />
-        <button 
-          class="add"
-          v-if="!isAdded(book.book.ISBN)"
-          @click="addToReadingBooks(book.book.ISBN)"
+  <div class="books-wrapper">
+    <main class="main">
+      <form @submit.prevent="(e) => { e.preventDefault(); }">
+        <select 
+          name="genre" 
+          id="genre" 
+          @change="filterByGenre"
         >
-          Añadir
-        </button>
-        <button 
-          class="added"
-          v-else
+          <option value="Todos">
+            Todos
+          </option>
+          <option 
+            v-for="(genre, index) in genres" 
+            :key="'g-' + (index + 1)" 
+            :value="genre"
+          >
+            {{ genre }}
+          </option>
+        </select>
+        <input
+          type="text"
+          id="name"
+          placeholder="Buscar por nombre"
+          @input="filterByName"
         >
-          Añadido
-        </button>
-      </div>
-    </div>
-  </main>
-  <aside>
-    <div>
-      <h2>Lista de lectura</h2>
-      <div 
-        class="reading-books"
-        v-if="reading_books.length > 0"
-      >
+      </form>
+      <h2> {{ books_count }} libros disponibles</h2>
+      <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
+      <section class="available-books">
         <div
           class="book"
-          v-for="book in reading_books" 
-          :key="book[0].book.ISBN" 
+          v-for="book in books" 
+          :key="book.book.ISBN" 
         >
           <BookCard 
-            :book="book[0].book"
+            :book="book.book"
           />
-          <button @click="removeFromReadingBooks(book[0].book.ISBN)">
-            ❌
+          <button 
+            class="add"
+            v-if="!isAdded(book.book.ISBN)"
+            @click="addToReadingBooks(book.book.ISBN)"
+          >
+            Añadir
+          </button>
+          <button 
+            class="added"
+            v-else
+          >
+            Añadido
           </button>
         </div>
+      </section>
+    </main>
+    <aside class="aside">
+      <div>
+        <h2>Lista de lectura</h2>
+        <section 
+          class="reading-books"
+          v-if="reading_books.length > 0"
+        >
+          <div
+            class="book"
+            v-for="book in reading_books" 
+            :key="book[0].book.ISBN" 
+          >
+            <BookCard 
+              :book="book[0].book"
+            />
+            <button @click="removeFromReadingBooks(book[0].book.ISBN)">
+              ❌
+            </button>
+          </div>
+        </section>
       </div>
-    </div>
-  </aside>
+    </aside>
+  </div>
 </template>
 
 <style scoped>
-
-.available-books{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.reading-books{
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.book{
-  width: fit-content;
-  display: flex;
-  flex-direction: column;
-}
 
 .book .added{
   color: #999;
@@ -226,7 +210,5 @@ button:hover{
 button:focus{
   outline: none;
 }
-
-
 
 </style>
