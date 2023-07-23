@@ -116,32 +116,41 @@
 <template>
   <div class="books-wrapper">
     <main class="main">
-      <form @submit.prevent="(e) => { e.preventDefault(); }">
-        <select 
-          name="genre" 
-          id="genre" 
-          @change="filterByGenre"
+      <header class="header">
+        <form 
+          class="flex-column gap-10"
+          @submit.prevent="(e) => { e.preventDefault(); }"
         >
-          <option value="Todos">
-            Todos
-          </option>
-          <option 
-            v-for="(genre, index) in genres" 
-            :key="'g-' + (index + 1)" 
-            :value="genre"
+          <div>
+            <label for="genre">Genero: </label>
+            <select 
+              name="genre" 
+              id="genre" 
+              @change="filterByGenre"
+            >
+              <option value="Todos">
+                Todos
+              </option>
+              <option 
+                v-for="(genre, index) in genres" 
+                :key="'g-' + (index + 1)" 
+                :value="genre"
+              >
+                {{ genre }}
+              </option>
+            </select>
+          </div>
+          <input
+            class="search-title-input"
+            type="text"
+            id="name"
+            placeholder="Buscar por título"
+            @input="filterByName"
           >
-            {{ genre }}
-          </option>
-        </select>
-        <input
-          type="text"
-          id="name"
-          placeholder="Buscar por nombre"
-          @input="filterByName"
-        >
-      </form>
-      <h2> {{ books_count }} libros disponibles</h2>
-      <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
+        </form>
+        <h2> {{ books_count }} libros disponibles</h2>
+        <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
+      </header>
       <section class="available-books">
         <div
           class="book"
@@ -167,28 +176,32 @@
         </div>
       </section>
     </main>
-    <aside class="aside">
-      <div>
-        <h2>Lista de lectura</h2>
-        <section 
-          class="reading-books"
-          v-if="reading_books.length > 0"
-        >
-          <div
-            class="book"
-            v-for="book in reading_books" 
-            :key="book[0].book.ISBN" 
-          >
-            <BookCard 
-              :book="book[0].book"
-            />
-            <button @click="removeFromReadingBooks(book[0].book.ISBN)">
-              ❌
-            </button>
-          </div>
-        </section>
-      </div>
-    </aside>
+    <div class="aside-wrapper">
+      <aside class="aside">
+        <div>
+          <h2>Lista de lectura</h2>
+          <section class=" scroll reading-books-scroll">
+            <div 
+              class="reading-books"
+              v-if="reading_books.length > 0"
+            >
+              <div
+                class="book"
+                v-for="book in reading_books" 
+                :key="book[0].book.ISBN" 
+              >
+                <BookCard 
+                  :book="book[0].book"
+                />
+                <button @click="removeFromReadingBooks(book[0].book.ISBN)">
+                  ❌
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </div>
   </div>
 </template>
 
