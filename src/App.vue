@@ -122,7 +122,10 @@
           @submit.prevent="(e) => { e.preventDefault(); }"
         >
           <div>
-            <label for="genre">Genero: </label>
+            <label
+              for="genre"
+              class="genre-label"
+            >Genero: </label>
             <select 
               name="genre" 
               id="genre" 
@@ -214,6 +217,7 @@
 
 button{
   border: none;
+  border-radius: 0 0 5px 5px;
 }
 
 button:hover{

@@ -201,7 +201,7 @@ button {
 
 /*FORM*/
 .search-title-input{
-  width: 250px;
+  width: 200px;
   max-width: 90%;
 }
 
@@ -211,6 +211,17 @@ button {
 
 .main .header input{
   margin: auto;
+  font-size: 1.1rem;
+  padding: 5px;
+}
+
+.main .header select{
+  font-size: 1.1rem;
+  padding: 5px;
+}
+
+.main .header .genre-label{
+  font-size: 1.1rem;
 }
 
 .main .header h3{
