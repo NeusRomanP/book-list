@@ -3,17 +3,17 @@
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
   const books = ref(booksData.library);
-  const books_count = ref(books.value.length);
-  const reading_books = ref([]);
+  const booksCount = ref(books.value.length);
+  const readingBooks = ref([]);
   const genres = Array.from(new Set(booksData.library.map((book) => {
     return book.book.genre;
   })));
 
-  const current_genre = ref('Todos');
+  const currentGenre = ref('Todos');
 
   onBeforeMount(() => {
-    reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
-    books_count.value = books.value.length - reading_books.value.length;
+    readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
+    booksCount.value = books.value.length - readingBooks.value.length;
   });
 
   const filterByName = (e) => {
@@ -33,29 +33,29 @@
 
   const getNewCounter = () => {
 
-    let filtered_books_ISBN = books.value.map((book) => {
+    let filteredBooksISBN = books.value.map((book) => {
       return book.book.ISBN;
     })
 
-    let reading_books_filtered = reading_books.value.filter((book) => {
-      if (!filtered_books_ISBN.includes(book[0].book.ISBN)) return false;
-      return ((book[0].book.genre === current_genre.value || current_genre.value === 'Todos') &&
+    let readingBooksFiltered = readingBooks.value.filter((book) => {
+      if (!filteredBooksISBN.includes(book[0].book.ISBN)) return false;
+      return ((book[0].book.genre === currentGenre.value || currentGenre.value === 'Todos') &&
         book[0].book.title.toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .includes(name));
     })
     
-    return books.value.length - reading_books_filtered.length;
+    return books.value.length - readingBooksFiltered.length;
   }
 
   const filterByGenre = (e) => {
-    current_genre.value = document.getElementById('genre').value;
+    currentGenre.value = document.getElementById('genre').value;
 
-    if (current_genre.value === 'Todos') {
+    if (currentGenre.value === 'Todos') {
       books.value = booksData.library;
     }else{
       books.value = booksData.library.filter((book) => {
-        return book.book.genre === current_genre.value;
+        return book.book.genre === currentGenre.value;
       })
     }
 
@@ -65,50 +65,50 @@
   }
 
   const addToReadingBooks = (id) => {
-    let book_to_add = books.value.filter((book) => {
+    let bookToAdd = books.value.filter((book) => {
       return book.book.ISBN === id;
     });
 
-    reading_books.value.push(book_to_add);
+    readingBooks.value.push(bookToAdd);
 
-    books_count.value = books.value.length - reading_books.value.length;
+    booksCount.value = books.value.length - readingBooks.value.length;
 
-    books_count.value = getNewCounter();
+    booksCount.value = getNewCounter();
   }
 
   const removeFromReadingBooks = (id) => {
-    reading_books.value = reading_books.value.filter((book) => {
+    readingBooks.value = readingBooks.value.filter((book) => {
       return book[0].book.ISBN !== id;
     });
 
-    books_count.value = books.value.length - reading_books.value.length;
+    booksCount.value = books.value.length - readingBooks.value.length;
   }
 
   const isAdded = (id) => {
-    return reading_books.value.some((book) => {
+    return readingBooks.value.some((book) => {
       return book[0].book.ISBN === id;
     })
   }
 
-  watch(reading_books, (newVal) =>{
+  watch(readingBooks, (newVal) =>{
     localStorage.setItem('reading-books', JSON.stringify(newVal));
 
-    books_count.value = getNewCounter();
+    booksCount.value = getNewCounter();
   }, {deep:true});
 
   watch(books, () =>{
-    books_count.value = getNewCounter();
+    booksCount.value = getNewCounter();
   }, {deep:true});
 
-  watch(current_genre, () =>{
-    books_count.value = getNewCounter();
+  watch(currentGenre, () =>{
+    booksCount.value = getNewCounter();
     
   }, {deep:true});
 
   
 
   window.addEventListener('storage', () =>{
-    reading_books.value = JSON.parse(localStorage.getItem('reading-books')) ?? reading_books.value;
+    readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
   });
 
 </script>
@@ -151,8 +151,8 @@
             @input="filterByName"
           >
         </form>
-        <h2> {{ books_count }} libros disponibles</h2>
-        <h3>{{ reading_books.length }} libros en la lista de lectura</h3>
+        <h2> {{ booksCount }} libros disponibles</h2>
+        <h3>{{ readingBooks.length }} libros en la lista de lectura</h3>
       </header>
       <section class="available-books">
         <div
@@ -186,11 +186,11 @@
           <section class=" scroll reading-books-scroll">
             <div 
               class="reading-books"
-              v-if="reading_books.length > 0"
+              v-if="readingBooks.length > 0"
             >
               <div
                 class="book"
-                v-for="book in reading_books" 
+                v-for="book in readingBooks" 
                 :key="book[0].book.ISBN" 
               >
                 <BookCard 
