@@ -34,9 +34,9 @@
     scrollableBoxPosition = scrollableBox.getBoundingClientRect();
 
     if(touchLocation.pageX < scrollableBoxPosition.left){
-      scrollableBox.scrollLeft--;
+      scrollableBox.scrollLeft -=4;
     }else if(touchLocation.pageX > scrollableBoxPosition.right){
-      scrollableBox.scrollLeft++;
+      scrollableBox.scrollLeft +=4;
     }
 
     e.currentTarget.style.position = 'absolute';
