@@ -1,10 +1,11 @@
 <script setup>
-  import { onBeforeMount, ref, watch } from 'vue';
+  import { onBeforeMount, onMounted, ref, watch } from 'vue';
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
   const books = ref(booksData.library);
   const booksCount = ref(books.value.length);
   const readingBooks = ref([]);
+  const pagesNum = ref(0);
   const genres = Array.from(new Set(booksData.library.map((book) => {
     return book.book.genre;
   })));
@@ -16,11 +17,16 @@
     booksCount.value = books.value.length - readingBooks.value.length;
   });
 
+  onMounted(() => {
+    pagesNum.value = parseInt(document.getElementById('pages').value);
+  });
+
   const filterByName = (e) => {
     const name = document.getElementById('name').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
     if(e){
       filterByGenre();
+      filterByPages();
     }
 
     books.value = books.value.filter((book)=> {
@@ -48,6 +54,18 @@
     return books.value.length - readingBooksFiltered.length;
   }
 
+  const filterByPages = (e) => {
+    pagesNum.value = parseInt(document.getElementById('pages').value);
+
+    if(e){
+      filterByGenre();
+    }
+    
+    books.value = books.value.filter((book) => {
+      return book.book.pages >= pagesNum.value;
+    });
+  }
+
   const filterByGenre = (e) => {
     currentGenre.value = document.getElementById('genre').value;
 
@@ -61,6 +79,7 @@
 
     if(e){
       filterByName();
+      filterByPages();
     }
   }
 
@@ -104,6 +123,10 @@
     booksCount.value = getNewCounter();
     
   }, {deep:true});
+
+  watch(pagesNum, () => {
+
+  })
 
   
 
@@ -149,6 +172,19 @@
             id="name"
             placeholder="Buscar por título"
             @input="filterByName"
+          >
+          <label for="pages">Filtrar por número de páginas</label>
+          <span>({{ pagesNum }})</span>
+          <input
+            class="pages-num-input"
+            name="pages"
+            id="pages"
+            type="range"
+            min="0"
+            max="1500"
+            step="10"
+            value="0"
+            @change="filterByPages"
           >
         </form>
         <h2> {{ booksCount }} libros disponibles</h2>

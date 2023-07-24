@@ -150,13 +150,21 @@ button {
 @media (max-width: 1000px) {
   .available-books {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     justify-content: center;
     gap: 10px;
   }
 }
 
 @media (max-width: 800px) {
+
+  .available-books{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-content: center;
+    gap: 10px;
+  }
+
   .books-wrapper{
     display: flex;
     flex-direction: column-reverse;
@@ -189,7 +197,7 @@ button {
   }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 560px) {
   .available-books {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -203,6 +211,22 @@ button {
 .search-title-input{
   width: 200px;
   max-width: 90%;
+}
+
+.pages-num-input{
+  appearance: none;
+  height: 5px;
+  background: #111;
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px white;
+}
+
+.pages-num-input::-webkit-slider-thumb{
+  appearance: none;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: radial-gradient(black, white);
 }
 
 .main .header{
