@@ -73,6 +73,7 @@ button {
 /*Aside scrollbar*/
 .scroll::-webkit-scrollbar {
   width: 5px;
+  height: 20px;
 }
 
 /* Track */
