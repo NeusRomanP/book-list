@@ -13,14 +13,61 @@
   const currentGenre = ref('Todos');
   const draggedBook = ref(null);
 
-  const avoidScroll = (e) => {
-    e.scroll= false;
+  let scrollableBoxPosition = null;
+
+  const handleDragStartOnMobile = (e, index) => {
+    e.preventDefault();
+    draggedBook.value = index;
   }
 
   const handleDragStart = (index) => {
     draggedBook.value = index;
   }
 
+  const handleDragOnMobile = (e) => {
+    e.preventDefault();
+
+    let touchLocation = e.targetTouches[0];
+
+    const scrollableBox = document.getElementById('reading-books-scroll');
+
+    scrollableBoxPosition = scrollableBox.getBoundingClientRect();
+
+    if(touchLocation.pageX < scrollableBoxPosition.left){
+      scrollableBox.scrollLeft--;
+    }else if(touchLocation.pageX > scrollableBoxPosition.right){
+      scrollableBox.scrollLeft++;
+    }
+
+    e.currentTarget.style.position = 'absolute';
+    e.currentTarget.style.left = touchLocation.pageX +'px';
+    e.currentTarget.style.top = touchLocation.pageY +'px';
+
+  }
+
+  const handleDragEndOnMobile = (e) => {
+    const targetPos = e.currentTarget.getBoundingClientRect();
+    const targetPosTop = targetPos.top;
+    const targetPosBottom = targetPos.bottom;
+    if(targetPosTop > scrollableBoxPosition.bottom || targetPosBottom < scrollableBoxPosition.top){
+      e.currentTarget.style.position = 'static';
+    }else{
+      const middle = scrollableBoxPosition.top +((scrollableBoxPosition.bottom - scrollableBoxPosition.top)/2)
+      let element = document.elementsFromPoint(targetPos.left, middle)[3];
+      let element2 = document.elementsFromPoint(targetPos.right, middle)[3];
+      let element3 = document.elementsFromPoint(targetPos.left, middle)[1];
+
+      if(element?.getAttribute('index')){
+        handleDrop(parseInt(element.getAttribute('index')));
+      }else if(element2?.getAttribute('index')){
+        handleDrop(parseInt(element2.getAttribute('index')));
+      }else if(element3?.getAttribute('index')){
+        handleDrop(parseInt(element3.getAttribute('index')));
+      }
+    }
+    e.currentTarget.style.position = 'static';
+  }
+  
   const handleDragOver = (e) => {
     e.preventDefault();
   }
@@ -38,6 +85,8 @@
   onBeforeMount(() => {
     readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
     booksCount.value = books.value.length - readingBooks.value.length;
+
+
   });
 
   onMounted(() => {
@@ -242,7 +291,10 @@
       <aside class="aside">
         <div>
           <h2>Lista de lectura</h2>
-          <section class=" scroll reading-books-scroll">
+          <section 
+            class="scroll reading-books-scroll"
+            id="reading-books-scroll"
+          >
             <div 
               class="reading-books"
               v-if="readingBooks.length > 0"
@@ -251,8 +303,11 @@
                 class="book"
                 v-for="(book, index) in readingBooks" 
                 :key="book[0].book.ISBN" 
+                :index="index"
                 :draggable="true"
-                @touchstart="avoidScroll"
+                @touchstart="(e) => {handleDragStartOnMobile(e, index)}"
+                @touchmove="handleDragOnMobile"
+                @touchend="handleDragEndOnMobile"
                 @dragstart="handleDragStart(index)"
                 @dragover="handleDragOver"
                 @drop="handleDrop(index)"
