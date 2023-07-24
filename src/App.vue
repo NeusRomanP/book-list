@@ -11,6 +11,29 @@
   })));
 
   const currentGenre = ref('Todos');
+  const draggedBook = ref(null);
+
+  const avoidScroll = (e) => {
+    e.preventDefault();
+  }
+
+  const handleDragStart = (index) => {
+    draggedBook.value = index;
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  }
+
+  const handleDragEnd = () => {
+    draggedBook.value = null;
+  }
+
+  const handleDrop = (index) => {
+    const droppedBook = readingBooks.value.splice(draggedBook.value, 1)[0];
+    readingBooks.value.splice(index, 0, droppedBook);
+    draggedBook.value = null;
+  }
 
   onBeforeMount(() => {
     readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
@@ -125,14 +148,14 @@
   }, {deep:true});
 
   watch(pagesNum, () => {
-
-  })
-
-  
+    booksCount.value = getNewCounter();
+  });
 
   window.addEventListener('storage', () =>{
     readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
   });
+
+  
 
 </script>
 
@@ -226,8 +249,14 @@
             >
               <div
                 class="book"
-                v-for="book in readingBooks" 
+                v-for="(book, index) in readingBooks" 
                 :key="book[0].book.ISBN" 
+                :draggable="true"
+                @touchstart="avoidScroll"
+                @dragstart="handleDragStart(index)"
+                @dragover="handleDragOver"
+                @drop="handleDrop(index)"
+                @dragend="handleDragEnd"
               >
                 <BookCard 
                   :book="book[0].book"
