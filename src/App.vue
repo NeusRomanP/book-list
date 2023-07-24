@@ -14,7 +14,7 @@
   const draggedBook = ref(null);
 
   const avoidScroll = (e) => {
-    e.preventDefault();
+    e.scroll= false;
   }
 
   const handleDragStart = (index) => {
