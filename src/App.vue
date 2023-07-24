@@ -305,7 +305,6 @@
                 :key="book[0].book.ISBN" 
                 :index="index"
                 :draggable="true"
-                @touchstart="(e) => {handleDragStartOnMobile(e, index)}"
                 @touchmove="handleDragOnMobile"
                 @touchend="handleDragEndOnMobile"
                 @dragstart="handleDragStart(index)"
@@ -314,6 +313,7 @@
                 @dragend="handleDragEnd"
               >
                 <BookCard 
+                  @touchstart="(e) => {handleDragStartOnMobile(e, index)}"
                   :book="book[0].book"
                 />
                 <button @click="removeFromReadingBooks(book[0].book.ISBN)">
