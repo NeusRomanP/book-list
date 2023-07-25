@@ -1,7 +1,15 @@
-# Vue 3 + Vite
+# Prueba técnica - Reading List
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Contexto
 
-## Recommended IDE Setup
+Esta es una prueba técnica propuesta por *[midudev](https://www.twitch.tv/midudev)* en su *[GitHub](https://github.com/midudev/pruebas-tecnicas/tree/main/pruebas/01-reading-list)*
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Tecnologías usadas
+
+- Vue3 + Vite
+- Cypress
+
+
+## Demo
+
+https://book-list-neus.vercel.app/
