@@ -5,7 +5,7 @@
   const books = ref(booksData.library);
   const booksCount = ref(books.value.length);
   const readingBooks = ref([]);
-  const pagesNum = ref(0);
+  const pagesNum = ref(1500);
   const genres = Array.from(new Set(booksData.library.map((book) => {
     return book.book.genre;
   })));
@@ -137,7 +137,7 @@
     }
     
     books.value = books.value.filter((book) => {
-      return book.book.pages >= pagesNum.value;
+      return book.book.pages <= pagesNum.value;
     });
   }
 
@@ -258,7 +258,7 @@
             min="0"
             max="1500"
             step="10"
-            value="0"
+            value="1500"
             @change="filterByPages"
           >
         </form>
