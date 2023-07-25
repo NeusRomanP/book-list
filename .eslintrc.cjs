@@ -1,6 +1,7 @@
 module.exports = {
   env: {
     node: true,
+    "cypress/globals": true
   },
   extends: [
     'eslint:recommended',
