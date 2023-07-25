@@ -49,20 +49,23 @@
     const targetPos = e.currentTarget.getBoundingClientRect();
     const targetPosTop = targetPos.top;
     const targetPosBottom = targetPos.bottom;
+
     if(targetPosTop > scrollableBoxPosition.bottom || targetPosBottom < scrollableBoxPosition.top){
       e.currentTarget.style.position = 'static';
     }else{
       const middle = scrollableBoxPosition.top +((scrollableBoxPosition.bottom - scrollableBoxPosition.top)/2)
       let element = document.elementsFromPoint(targetPos.left, middle)[3];
-      let element2 = document.elementsFromPoint(targetPos.right, middle)[3];
-      let element3 = document.elementsFromPoint(targetPos.left, middle)[1];
+      let element3 = document.elementsFromPoint(targetPos.left + 20, middle)[3];
 
       if(element?.getAttribute('index')){
         handleDrop(parseInt(element.getAttribute('index')));
-      }else if(element2?.getAttribute('index')){
-        handleDrop(parseInt(element2.getAttribute('index')));
       }else if(element3?.getAttribute('index')){
-        handleDrop(parseInt(element3.getAttribute('index')));
+        if(element3?.getAttribute('index') < e.currentTarget.getAttribute('index')){
+          handleDrop(parseInt(element3.getAttribute('index')));
+        }else{
+          element3 = document.elementsFromPoint(targetPos.left - 20, middle)[1];
+          handleDrop(parseInt(element3.getAttribute('index')));
+        }
       }
     }
     e.currentTarget.style.position = 'static';
