@@ -3,7 +3,7 @@ describe('Books app', () => {
     cy.visit('http://localhost:5173')
   })
 
-  it("filters correctly", () => {
+  it('filters books correctly', () => {
     cy.get('#name').type('d');
     cy.get('#genre').select('Fantasía');
     cy.get('#pages').invoke('val', 1000).trigger('change');
