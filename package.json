@@ -22,8 +22,6 @@
     "vite": "^4.4.0"
   },
   "eslintConfig": {
-    "plugins": [
-      "cypress"
-    ]
+    
   }
 }
