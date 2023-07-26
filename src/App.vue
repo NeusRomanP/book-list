@@ -1,9 +1,9 @@
 <script setup>
   import { onBeforeMount, onMounted, ref, watch } from 'vue';
   import booksData from './assets/books.json'
-  import BookCard from './components/BookCard.vue';
   import ReadingList from './components/ReadingList.vue';
   import FilterForm from './components/FilterForm.vue';
+  import BookList from './components/BookList.vue';
   const books = ref(booksData.library);
   const booksCount = ref(books.value.length);
   const readingBooks = ref([]);
@@ -181,12 +181,6 @@
 
     booksCount.value = getNewCounter();
   }
-  
-  const isAdded = (id) => {
-    return readingBooks.value.some((book) => {
-      return book[0].book.ISBN === id;
-    })
-  }
 
   watch(readingBooks, (newVal) =>{
     localStorage.setItem('reading-books', JSON.stringify(newVal));
@@ -210,9 +204,6 @@
   window.addEventListener('storage', () =>{
     readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
   });
-
-  
-
 </script>
 
 <template>
@@ -230,28 +221,11 @@
         <h3>{{ readingBooks.length }} libros en la lista de lectura</h3>
       </header>
       <section class="available-books">
-        <div
-          class="book"
-          v-for="book in books" 
-          :key="book.book.ISBN" 
-        >
-          <BookCard 
-            :book="book.book"
-          />
-          <button 
-            class="add"
-            v-if="!isAdded(book.book.ISBN)"
-            @click="addToReadingBooks(book.book.ISBN)"
-          >
-            Añadir
-          </button>
-          <button 
-            class="added"
-            v-else
-          >
-            Añadido
-          </button>
-        </div>
+        <BookList 
+          :books="books"
+          :reading-books="readingBooks"
+          @add-to-reading-books="addToReadingBooks"
+        />
       </section>
     </main>
     <div class="aside-wrapper">
@@ -278,23 +252,5 @@
 </template>
 
 <style scoped>
-
-.book .added{
-  color: #999;
-  cursor: auto;
-}
-
-button{
-  border: none;
-  border-radius: 0 0 5px 5px;
-}
-
-button:hover{
-  border: none;
-}
-
-button:focus{
-  outline: none;
-}
 
 </style>

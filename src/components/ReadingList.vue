@@ -2,8 +2,8 @@
   import BookCard from './BookCard.vue';
 
   defineProps({
-    books: Object,
-    readingBooks: Object,
+    books: Array,
+    readingBooks: Array,
     booksCount: Number
   });
 
