@@ -70,6 +70,24 @@ button {
   gap: 10px;
 }
 
+/*HEADER*/
+
+.top-header{
+  text-align: center;
+  border-bottom: 2px solid white;
+  border-image: linear-gradient(to left, transparent 0%, white 10% 90%, transparent 100%) 1;
+}
+
+.top-header .main-title{
+  margin-bottom: 0;
+}
+
+.top-header .logo{
+  display: inline-block;
+  max-width: 90%;
+  width: 400px;
+}
+
 /*Aside scrollbar*/
 .scroll::-webkit-scrollbar {
   width: 5px;

@@ -207,6 +207,16 @@
 </script>
 
 <template>
+  <header class="top-header">
+    <h1 class="main-title">
+      ¡Alquila los mejores libros!
+    </h1>
+    <img 
+      class="logo"
+      src="./assets/book-list-white.webp" 
+      alt="Book list logo"
+    >
+  </header>
   <div class="books-wrapper">
     <main class="main">
       <header class="header">
