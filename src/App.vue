@@ -3,6 +3,7 @@
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
   import ReadingList from './components/ReadingList.vue';
+  import FilterForm from './components/FilterForm.vue';
   const books = ref(booksData.library);
   const booksCount = ref(books.value.length);
   const readingBooks = ref([]);
@@ -218,53 +219,13 @@
   <div class="books-wrapper">
     <main class="main">
       <header class="header">
-        <form 
-          class="flex-column gap-10"
-          @submit.prevent="(e) => { e.preventDefault(); }"
-        >
-          <div>
-            <label
-              for="genre"
-              class="genre-label"
-            >Genero: </label>
-            <select 
-              name="genre" 
-              id="genre" 
-              @change="filterByGenre"
-            >
-              <option value="Todos">
-                Todos
-              </option>
-              <option 
-                v-for="(genre, index) in genres" 
-                :key="'g-' + (index + 1)" 
-                :value="genre"
-              >
-                {{ genre }}
-              </option>
-            </select>
-          </div>
-          <input
-            class="search-title-input"
-            type="text"
-            id="name"
-            placeholder="Buscar por título"
-            @input="filterByName"
-          >
-          <label for="pages">Filtrar por número de páginas</label>
-          <span>({{ pagesNum }})</span>
-          <input
-            class="pages-num-input"
-            name="pages"
-            id="pages"
-            type="range"
-            min="0"
-            max="1500"
-            step="10"
-            value="1500"
-            @change="filterByPages"
-          >
-        </form>
+        <FilterForm
+          :genres="genres"
+          :pages-num="pagesNum"
+          @filter-by-genre="filterByGenre"
+          @filter-by-name="filterByName"
+          @filter-by-pages="filterByPages"
+        />
         <h2> {{ booksCount }} libros disponibles</h2>
         <h3>{{ readingBooks.length }} libros en la lista de lectura</h3>
       </header>
