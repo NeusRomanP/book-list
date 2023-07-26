@@ -2,6 +2,7 @@
   import { onBeforeMount, onMounted, ref, watch } from 'vue';
   import booksData from './assets/books.json'
   import BookCard from './components/BookCard.vue';
+  import ReadingList from './components/ReadingList.vue';
   const books = ref(booksData.library);
   const booksCount = ref(books.value.length);
   const readingBooks = ref([]);
@@ -11,8 +12,8 @@
   })));
 
   const currentGenre = ref('Todos');
-  const draggedBook = ref(null);
 
+  const draggedBook = ref(null);
   let scrollableBoxPosition = null;
 
   const handleDragStartOnMobile = (e, index) => {
@@ -33,15 +34,15 @@
 
     scrollableBoxPosition = scrollableBox.getBoundingClientRect();
 
-    if(touchLocation.pageX < scrollableBoxPosition.left){
-      scrollableBox.scrollLeft -=4;
-    }else if(touchLocation.pageX > scrollableBoxPosition.right){
-      scrollableBox.scrollLeft +=4;
+    if (touchLocation.pageX < scrollableBoxPosition.left) {
+      scrollableBox.scrollLeft -= 4;
+    } else if (touchLocation.pageX > scrollableBoxPosition.right) {
+      scrollableBox.scrollLeft += 4;
     }
 
     e.currentTarget.style.position = 'absolute';
-    e.currentTarget.style.left = touchLocation.pageX +'px';
-    e.currentTarget.style.top = touchLocation.pageY +'px';
+    e.currentTarget.style.left = touchLocation.pageX + 'px';
+    e.currentTarget.style.top = touchLocation.pageY + 'px';
 
   }
 
@@ -50,19 +51,19 @@
     const targetPosTop = targetPos.top;
     const targetPosBottom = targetPos.bottom;
 
-    if(targetPosTop > scrollableBoxPosition.bottom || targetPosBottom < scrollableBoxPosition.top){
+    if (targetPosTop > scrollableBoxPosition.bottom || targetPosBottom < scrollableBoxPosition.top) {
       e.currentTarget.style.position = 'static';
-    }else{
-      const middle = scrollableBoxPosition.top +((scrollableBoxPosition.bottom - scrollableBoxPosition.top)/2)
+    } else {
+      const middle = scrollableBoxPosition.top + ((scrollableBoxPosition.bottom - scrollableBoxPosition.top) / 2)
       let element = document.elementsFromPoint(targetPos.left, middle)[3];
       let element3 = document.elementsFromPoint(targetPos.left + 20, middle)[3];
 
-      if(element?.getAttribute('index')){
+      if (element?.getAttribute('index')) {
         handleDrop(parseInt(element.getAttribute('index')));
-      }else if(element3?.getAttribute('index')){
-        if(element3?.getAttribute('index') < e.currentTarget.getAttribute('index')){
+      } else if (element3?.getAttribute('index')) {
+        if (element3?.getAttribute('index') < e.currentTarget.getAttribute('index')) {
           handleDrop(parseInt(element3.getAttribute('index')));
-        }else{
+        } else {
           element3 = document.elementsFromPoint(targetPos.left - 20, middle)[1];
           handleDrop(parseInt(element3.getAttribute('index')));
         }
@@ -70,7 +71,7 @@
     }
     e.currentTarget.style.position = 'static';
   }
-  
+
   const handleDragOver = (e) => {
     e.preventDefault();
   }
@@ -84,6 +85,16 @@
     readingBooks.value.splice(index, 0, droppedBook);
     draggedBook.value = null;
   }
+
+  const removeFromReadingBooks = (id) => {
+
+    readingBooks.value = readingBooks.value.filter((book) => {
+      return book[0].book.ISBN !== id;
+    });
+
+    booksCount.value = books.value.length - readingBooks.value.length;
+  }
+ 
 
   onBeforeMount(() => {
     readingBooks.value = JSON.parse(localStorage.getItem('reading-books')) ?? readingBooks.value;
@@ -169,15 +180,7 @@
 
     booksCount.value = getNewCounter();
   }
-
-  const removeFromReadingBooks = (id) => {
-    readingBooks.value = readingBooks.value.filter((book) => {
-      return book[0].book.ISBN !== id;
-    });
-
-    booksCount.value = books.value.length - readingBooks.value.length;
-  }
-
+  
   const isAdded = (id) => {
     return readingBooks.value.some((book) => {
       return book[0].book.ISBN === id;
@@ -294,37 +297,19 @@
       <aside class="aside">
         <div>
           <h2>Lista de lectura</h2>
-          <section 
-            class="scroll reading-books-scroll"
-            id="reading-books-scroll"
-          >
-            <div 
-              class="reading-books"
-              v-if="readingBooks.length > 0"
-            >
-              <div
-                class="book"
-                v-for="(book, index) in readingBooks" 
-                :key="book[0].book.ISBN" 
-                :index="index"
-                :draggable="true"
-                @touchmove="handleDragOnMobile"
-                @touchend="handleDragEndOnMobile"
-                @dragstart="handleDragStart(index)"
-                @dragover="handleDragOver"
-                @drop="handleDrop(index)"
-                @dragend="handleDragEnd"
-              >
-                <BookCard 
-                  @touchstart="(e) => {handleDragStartOnMobile(e, index)}"
-                  :book="book[0].book"
-                />
-                <button @click="removeFromReadingBooks(book[0].book.ISBN)">
-                  ❌
-                </button>
-              </div>
-            </div>
-          </section>
+          <ReadingList 
+            :reading-books="readingBooks"
+            :books="books"
+            :books-count="booksCount"
+            @handle-drag-start-on-mobile="handleDragStartOnMobile"
+            @handle-drag-on-mobile="handleDragOnMobile"
+            @handle-drag-end-on-mobile="handleDragEndOnMobile"
+            @handle-drag-start="handleDragStart"
+            @handle-drag-over="handleDragOver"
+            @handle-drag-end="handleDragEnd"
+            @handle-drop="handleDrop"
+            @remove-from-reading-books="removeFromReadingBooks"
+          />
         </div>
       </aside>
     </div>
